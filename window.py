@@ -1,12 +1,11 @@
 import settings
 import copy
+import random
 
 from typing import List
 from tkinter import Tk, Canvas
 
-from cells import Empty
-from cells import Wall
-from cells import BaseCell
+from cells import Empty, Wall, BaseCell, PlantFood
 
 
 class Window:
@@ -63,6 +62,7 @@ class World:
         self._window = window
         self._generate_map()
         self._generate_walls()
+        self._set_food(150)
 
     def _generate_map(self):
         """Метод вызывается для первичной генерации мира, заполняет его пустыми клетками."""
@@ -106,9 +106,32 @@ class World:
                         self._window.change_cell_color(new_world[i][j].get_id, new_world[i][j].get_color)
         self.GRID = copy.deepcopy(new_world)
 
-    def _set_food(self, count: int):
+    def _set_food(self, count: int) -> None:
         """Метод генерирует определенное количество еды в мире в рандомных пустых местах."""
-        pass
+        new_grid = copy.deepcopy(self.GRID)
+
+        coefficient = 0.1
+        if count < 100:
+            coefficient /= 10
+
+        print(coefficient)
+
+        while True:
+            for i, row in enumerate(new_grid):
+                for j, cell in enumerate(row):
+                    if not cell.is_solid:
+                        # из-за низкой вероятности создания клетки растительной пищи и бесконечного цикла, достигается
+                        # равномерное покрытие
+                        if random.random() < coefficient:
+                            food = PlantFood()
+                            food.set_id(cell.get_id)
+                            new_grid[i][j] = food
+
+                            count -= 1
+
+                            if count == 0:
+                                self._update_world(new_grid)
+                                return
 
     def execute(self):
         while True:

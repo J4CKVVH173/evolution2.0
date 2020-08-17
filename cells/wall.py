@@ -29,5 +29,9 @@ class Wall(BaseCell):
     def get_color(self):
         return self.TYPE.COLOR
 
+    @property
+    def is_solid(self):
+        return self.TYPE.SOLID
+
     def __repr__(self):
         return f'Wall: {self.MAP_ID}'

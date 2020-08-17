@@ -8,6 +8,7 @@ class PlantFood(BaseCell):
     COLOR = settings.PLANT_FOOD
     HEALTH = 1
     SOLOD = True
+    SOLID = True
 
     def set_state(self):
         pass
@@ -18,3 +19,7 @@ class PlantFood(BaseCell):
     @property
     def get_color(self):
         return self.COLOR
+
+    @property
+    def is_solid(self):
+        return self.SOLID

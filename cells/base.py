@@ -22,6 +22,12 @@ class BaseCell(ABC):
         pass
 
     @property
+    @abstractmethod
+    def is_solid(self):
+        """Метод, для проверки, является ли объект твердым."""
+        pass
+
+    @property
     def get_id(self) -> int:
         return self.MAP_ID
 
