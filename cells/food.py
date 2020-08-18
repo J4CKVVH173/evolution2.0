@@ -7,7 +7,6 @@ class PlantFood(BaseCell):
 
     COLOR = settings.PLANT_FOOD
     HEALTH = 1
-    SOLOD = True
     SOLID = True
 
     def set_state(self):
