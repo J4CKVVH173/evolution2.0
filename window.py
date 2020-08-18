@@ -99,6 +99,14 @@ class World:
         self._update_world(new_grid)
 
     def _update_world(self, new_world: List[List[BaseCell]]):
+        """Метод производит перерисовку мира.
+
+        Принимается обновленное состояние мира, сравнивается со старым состоянием, если положение клеток поменялось,
+        производится точечная перерисовка.
+
+        Args:
+            new_world (List[List[BaseCell]]): Матрица содержащая обновленное состояние мира, новое положение клеток.
+        """
         for i, row in enumerate(self.GRID):
             if not row == new_world[i]:
                 for j, cell in enumerate(row):
@@ -113,8 +121,6 @@ class World:
         coefficient = 0.1
         if count < 100:
             coefficient /= 10
-
-        print(coefficient)
 
         while True:
             for i, row in enumerate(new_grid):
@@ -134,5 +140,6 @@ class World:
                                 return
 
     def execute(self):
+        """Метод запуска мира."""
         while True:
             self._window.update()
