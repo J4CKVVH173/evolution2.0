@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 
 
 class BaseCell(ABC):
+    """Абстрактный класс, представляющий собой базовый класс для создания ячеек."""
 
     MAP_ID = None  # ID карты, где находится текущая ячейка
 

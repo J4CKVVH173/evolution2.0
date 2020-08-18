@@ -15,7 +15,7 @@ empty_type = EmptyType()
 
 
 class Empty(BaseCell):
-    """Легковес пустой ячейки."""
+    """Легковес пустой ячейки, из которых по умолчанию состоит мир."""
 
     TYPE = empty_type
 

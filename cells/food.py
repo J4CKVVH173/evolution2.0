@@ -4,6 +4,7 @@ from cells.base import BaseCell
 
 
 class PlantFood(BaseCell):
+    """Класс ячейки растительной еды."""
 
     COLOR = settings.PLANT_FOOD
     HEALTH = 1
