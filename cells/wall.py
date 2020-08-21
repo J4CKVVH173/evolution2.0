@@ -33,5 +33,6 @@ class Wall(BaseCell):
     def is_solid(self):
         return self.TYPE.SOLID
 
-    def __repr__(self):
-        return f'Wall: {self.MAP_ID}'
+    @property
+    def can_move(self):
+        return False

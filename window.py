@@ -6,6 +6,8 @@ from typing import List
 from tkinter import Tk, Canvas
 
 from cells import Empty, Wall, BaseCell, PlantFood
+from cells.live.herbivore import Herbivore
+from action import HerbArbiter, ActionContext
 
 
 class Window:
@@ -62,7 +64,11 @@ class World:
         self._window = window
         self._generate_map()
         self._generate_walls()
-        self._set_food(150)
+        self._set_cells(PlantFood, 150)
+        self._set_cells(Herbivore, 50)
+
+        self._action_context = ActionContext()
+        self._herb_arbiter = HerbArbiter()
 
     def _generate_map(self):
         """Метод вызывается для первичной генерации мира, заполняет его пустыми клетками."""
@@ -98,24 +104,13 @@ class World:
 
         self._update_world(new_grid)
 
-    def _update_world(self, new_world: List[List[BaseCell]]):
-        """Метод производит перерисовку мира.
-
-        Принимается обновленное состояние мира, сравнивается со старым состоянием, если положение клеток поменялось,
-        производится точечная перерисовка, и старое состояние мира заменяется на новое.
+    def _set_cells(self, Cell: BaseCell, count: int) -> None:
+        """Метод генерирует определенное количество клеток в мире в рандомных пустых местах.
 
         Args:
-            new_world (List[List[BaseCell]]): Матрица содержащая обновленное состояние мира, новое положение клеток.
+            Cell (BaseCell): класс ячейки которыми будет заполняться мир
+            count (int): количество ячеек, которыми нужно заполнить мир
         """
-        for i, row in enumerate(self.GRID):
-            if not row == new_world[i]:
-                for j, cell in enumerate(row):
-                    if not cell == new_world[i][j]:
-                        self._window.change_cell_color(new_world[i][j].get_id, new_world[i][j].get_color)
-        self.GRID = copy.deepcopy(new_world)
-
-    def _set_food(self, count: int) -> None:
-        """Метод генерирует определенное количество еды в мире в рандомных пустых местах."""
         new_grid = copy.deepcopy(self.GRID)
 
         coefficient = 0.1
@@ -129,9 +124,9 @@ class World:
                         # из-за низкой вероятности создания клетки растительной пищи и бесконечного цикла, достигается
                         # равномерное покрытие
                         if random.random() < coefficient:
-                            food = PlantFood()
-                            food.set_id(cell.get_id)
-                            new_grid[i][j] = food
+                            new_cell = Cell()
+                            new_cell.set_id(cell.get_id)
+                            new_grid[i][j] = new_cell
 
                             count -= 1
 
@@ -139,7 +134,39 @@ class World:
                                 self._update_world(new_grid)
                                 return
 
+    def _make_step(self):
+        """Метод для совершения одной итерации мира."""
+        new_grid = copy.deepcopy(self.GRID)
+
+        for i, row in enumerate(new_grid):
+            for j, cell in enumerate(row):
+                if cell.can_move:
+                    cell.make_move()
+                    if isinstance(cell, Herbivore):
+                        self._action_context.set_strategy(self._herb_arbiter)
+                    self._action_context.execute(cell, [j, i], self.GRID, new_grid)
+
+        self._update_world(new_grid)
+
+    def _update_world(self, new_world: List[List[BaseCell]]):
+        """Метод производит перерисовку мира.
+
+        Принимается обновленное состояние мира, сравнивается со старым состоянием, если положение клеток поменялось,
+        производится точечная перерисовка, и старое состояние мира заменяется на новое.
+
+        Args:
+            new_world (List[List[BaseCell]]): Матрица содержащая обновленное состояние мира, новое положение клеток.
+        """
+        # ToDo оптимизировать проверку, т.к. из-за DeepCopy это все разные объекты
+        for i, row in enumerate(self.GRID):
+            if not row == new_world[i]:
+                for j, cell in enumerate(row):
+                    if not cell == new_world[i][j]:
+                        self._window.change_cell_color(new_world[i][j].get_id, new_world[i][j].get_color)
+        self.GRID = copy.deepcopy(new_world)
+
     def execute(self):
         """Метод запуска мира."""
         while True:
+            self._make_step()
             self._window.update()

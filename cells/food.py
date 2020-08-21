@@ -23,3 +23,7 @@ class PlantFood(BaseCell):
     @property
     def is_solid(self):
         return self.SOLID
+
+    @property
+    def can_move(self):
+        return False
