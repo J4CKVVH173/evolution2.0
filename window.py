@@ -5,6 +5,8 @@ import random
 from typing import List
 from tkinter import Tk, Canvas
 
+from lib.utils import duck_typing_elements_equals, duck_typing_lists_equals
+
 from cells import Empty, Wall, BaseCell, PlantFood
 from cells.live.herbivore import Herbivore
 from action import HerbArbiter, ActionContext
@@ -157,11 +159,10 @@ class World:
         Args:
             new_world (List[List[BaseCell]]): Матрица содержащая обновленное состояние мира, новое положение клеток.
         """
-        # ToDo оптимизировать проверку, т.к. из-за DeepCopy это все разные объекты
         for i, row in enumerate(self.GRID):
-            if not row == new_world[i]:
+            if not duck_typing_lists_equals(row, new_world[i]):
                 for j, cell in enumerate(row):
-                    if not cell == new_world[i][j]:
+                    if not duck_typing_elements_equals(cell, new_world[i][j]):
                         self._window.change_cell_color(new_world[i][j].get_id, new_world[i][j].get_color)
         self.GRID = copy.deepcopy(new_world)
 
