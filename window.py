@@ -67,7 +67,7 @@ class World:
         self._generate_map()
         self._generate_walls()
         self._set_cells(PlantFood, 150)
-        self._set_cells(Herbivore, 50)
+        self._set_cells(Herbivore, 250)
 
         self._action_context = ActionContext()
         self._herb_arbiter = HerbArbiter()

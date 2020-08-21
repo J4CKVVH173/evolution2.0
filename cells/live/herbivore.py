@@ -1,4 +1,5 @@
 import settings
+import random
 
 from action.move import Move, MoveBuilder
 from cells.base import BaseCell
@@ -13,24 +14,28 @@ class Herbivore(BaseCell):
     SOLID = True
     FIXED = False
 
-    GENOME = [3, 3, 3, 3, 2, 2, 1, 1, 2, 2]
+    GENOME = []
     GENOME_POINTER = 0
 
-    def __init__(self):
+    def __init__(self, genom=None):
         self._move_info = MoveBuilder()
+        if genom:
+            self._set_genom(genom)
+        else:
+            self._generate_genome()
 
     def set_state(self):
         pass
 
     def make_move(self) -> None:
         gen = self.get_gen()
-        if gen == 1:
+        if gen in [0, 1, 2, 3]:
             self._move_info.set_move_y(-1)  # вверх
-        if gen == 2:
+        if gen in [4, 5, 6, 7]:
             self._move_info.set_move_x(1)  # вправо
-        if gen == 3:
+        if gen in [8, 9, 10, 11]:
             self._move_info.set_move_y(1)  # вниз
-        if gen == 4:
+        if gen in [12, 13, 14, 15]:
             self._move_info.set_move_x(-1)  # влево
 
     def get_move_info(self) -> Move:
@@ -48,6 +53,22 @@ class Herbivore(BaseCell):
             self.GENOME_POINTER = 0
 
         return gen
+
+    def _generate_genome(self) -> None:
+        """Метод для генерации первоначального генома."""
+        for i in range(64):
+            self.GENOME.append(random.randint(0, 15))
+
+    def _set_genom(self, genom: list) -> None:
+        """Метод для установки генома.
+
+        Args:
+            genom (list): Геном который будет установлен клетке.
+        """
+        self.GENOME = genom
+
+    def save_genom(self) -> list:
+        return self.GENOME.copy()
 
     @property
     def get_color(self):
