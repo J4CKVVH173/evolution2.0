@@ -5,15 +5,16 @@ from cells.base import BaseCell
 
 
 class BaseLive(BaseCell):
+    """Базовый класс для живых клеток."""
     HEALTH = 50
     SOLID = True
     FIXED = False
 
-    GENOME = []
     GENOME_POINTER = 0
 
     def __init__(self, genom=None):
         self._move_info = MoveBuilder()
+        self.GENOME = []
         if genom:
             self._set_genom(genom)
         else:
