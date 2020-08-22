@@ -1,6 +1,7 @@
 import settings
 import copy
 import random
+import time
 
 from typing import List
 from tkinter import Tk, Canvas
@@ -170,4 +171,5 @@ class World:
         """Метод запуска мира."""
         while True:
             self._make_step()
+            time.sleep(0.1)
             self._window.update()
