@@ -8,30 +8,16 @@ class WallType:
 
     COLOR = settings.WALL
     HEALTH = -1
-    SOLID = True
-
-
-wall_type = WallType()
 
 
 class Wall(BaseCell):
     """Легковес ячейки стены, они не обладают никакими свойствами, кроме того что через них нельзя пройти."""
 
-    TYPE = wall_type
-
-    def make_move(self):
-        pass
-
-    def set_state(self):
-        pass
+    TYPE = WallType()
 
     @property
     def get_color(self):
         return self.TYPE.COLOR
-
-    @property
-    def is_solid(self):
-        return self.TYPE.SOLID
 
     @property
     def can_move(self):

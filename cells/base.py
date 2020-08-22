@@ -4,18 +4,10 @@ from abc import ABC, abstractmethod
 class BaseCell(ABC):
     """Абстрактный класс, представляющий собой базовый класс для создания ячеек."""
 
-    MAP_ID = None  # ID карты, где находится текущая ячейка
-    FIXED = True
-
-    @abstractmethod
-    def set_state(self):
-        """Метод для установки внутреннего состояния клетки."""
-        pass
-
-    @abstractmethod
-    def make_move(self):
-        """Метод для совершения клеткой своего действия."""
-        pass
+    def __init__(self):
+        self.MAP_ID = None
+        self.FIXED = True
+        self.SOLID = True
 
     @property
     @abstractmethod
@@ -24,10 +16,9 @@ class BaseCell(ABC):
         pass
 
     @property
-    @abstractmethod
     def is_solid(self):
         """Метод, для проверки, является ли объект твердым."""
-        pass
+        return self.SOLID
 
     @property
     def can_move(self) -> bool:

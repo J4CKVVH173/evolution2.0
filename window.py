@@ -72,7 +72,7 @@ class World:
         self._generate_map()
         self._generate_walls()
         self._set_cells(PlantFood, 150)
-        self._set_cells(Herbivore, 25)
+        self._set_cells(Herbivore, 50)
 
     def _generate_map(self):
         """Метод вызывается для первичной генерации мира, заполняет его пустыми клетками."""

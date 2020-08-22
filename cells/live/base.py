@@ -6,15 +6,15 @@ from cells.base import BaseCell
 
 class BaseLive(BaseCell):
     """Базовый класс для живых клеток."""
-    HEALTH = 50
-    SOLID = True
-    FIXED = False
-
-    GENOME_POINTER = 0
 
     def __init__(self, genom=None):
-        self._move_info = MoveBuilder()
+        super().__init__()
         self.GENOME = []
+        self.GENOME_POINTER = 0
+        self.HEALTH = 50
+        self.FIXED = False
+
+        self._move_info = MoveBuilder()
         if genom:
             self._set_genom(genom)
         else:
@@ -68,7 +68,3 @@ class BaseLive(BaseCell):
     @property
     def get_color(self):
         return self.COLOR
-
-    @property
-    def is_solid(self):
-        return self.SOLID

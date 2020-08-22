@@ -7,22 +7,14 @@ class PlantFood(BaseCell):
     """Класс ячейки растительной еды."""
 
     COLOR = settings.PLANT_FOOD
-    HEALTH = 1
-    SOLID = True
 
-    def set_state(self):
-        pass
-
-    def make_move(self):
-        pass
+    def __init__(self):
+        super().__init__()
+        self.HEALTH = 1
 
     @property
     def get_color(self):
         return self.COLOR
-
-    @property
-    def is_solid(self):
-        return self.SOLID
 
     @property
     def can_move(self):

@@ -10,28 +10,18 @@ class EmptyType:
     HEALTH = -1
 
 
-empty_type = EmptyType()
-
-
 class Empty(BaseCell):
     """Легковес пустой ячейки, из которых по умолчанию состоит мир."""
 
-    TYPE = empty_type
-    SOLID = False
+    TYPE = EmptyType()
 
-    def make_move(self):
-        pass
-
-    def set_state(self):
-        pass
+    def __init__(self):
+        super().__init__()
+        self.SOLID = False
 
     @property
     def get_color(self):
         return self.TYPE.COLOR
-
-    @property
-    def is_solid(self):
-        return self.SOLID
 
     @property
     def can_move(self):
