@@ -1,4 +1,5 @@
 import random
+from abc import abstractmethod
 
 from action.move import Move, MoveBuilder
 from cells.base import BaseCell
@@ -15,10 +16,21 @@ class BaseLive(BaseCell):
         self.FIXED = False
 
         self._move_info = MoveBuilder()
+
         if genom:
             self._set_genom(genom)
         else:
             self._generate_genome()
+
+    @abstractmethod
+    def set_state(self):
+        """Метод для установки внутреннего состояния клетки после внешнего воздействия на нее."""
+        pass
+
+    @abstractmethod
+    def make_move(self):
+        """Метод для совершения шага клеткой."""
+        pass
 
     def get_gen(self) -> int:
         """Метод для получения гена на текущий ход.
@@ -38,16 +50,13 @@ class BaseLive(BaseCell):
         for i in range(64):
             self.GENOME.append(random.randint(0, 15))
 
-    def set_state(self):
-        pass
-
     def _set_genom(self, genom: list) -> None:
         """Метод для установки генома.
 
         Args:
             genom (list): Геном который будет установлен клетке.
         """
-        self.GENOME = genom
+        self.GENOME = genom.copy()
 
     def get_move_info(self) -> Move:
         """Метод формирует объект класса Move с информацией о движении клеток и возвращает его.

@@ -19,3 +19,6 @@ class Herbivore(BaseLive):
             self._move_info.set_move_y(1)  # вниз
         if gen in [12, 13, 14, 15]:
             self._move_info.set_move_x(-1)  # влево
+
+    def set_state(self):
+        pass
