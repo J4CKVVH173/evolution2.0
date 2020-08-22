@@ -108,3 +108,7 @@ class HerbArbiter(Arbiter):
                 new_position_cell.busy()
                 new_map[y][x] = Empty().set_id(cell.get_id)
                 new_map[i][j] = cell.set_id(new_position_cell.get_id)
+            else:
+                # если клетка заблокирована, куда нужно сделать шаг, то все равно нужно обновить объект, пусть он
+                # и остался на месте
+                new_map[y][x] = cell

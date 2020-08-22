@@ -65,13 +65,14 @@ class World:
 
     def __init__(self, window: Window):
         self._window = window
-        self._generate_map()
-        self._generate_walls()
-        self._set_cells(PlantFood, 150)
-        self._set_cells(Herbivore, 250)
 
         self._action_context = ActionContext()
         self._herb_arbiter = HerbArbiter()
+
+        self._generate_map()
+        self._generate_walls()
+        self._set_cells(PlantFood, 150)
+        self._set_cells(Herbivore, 25)
 
     def _generate_map(self):
         """Метод вызывается для первичной генерации мира, заполняет его пустыми клетками."""
@@ -108,7 +109,7 @@ class World:
         self._update_world(new_grid)
 
     def _set_cells(self, Cell: BaseCell, count: int) -> None:
-        """Метод генерирует определенное количество клеток в мире в рандомных пустых местах.
+        """Метод генерирует определенное количество клеток в мире в рандомных, пустых местах.
 
         Args:
             Cell (BaseCell): класс ячейки которыми будет заполняться мир
@@ -133,7 +134,7 @@ class World:
 
                             count -= 1
 
-                            if count == 0:
+                            if count <= 0:
                                 self._update_world(new_grid)
                                 return
 
@@ -141,7 +142,7 @@ class World:
         """Метод для совершения одной итерации мира."""
         new_grid = copy.deepcopy(self.GRID)
 
-        for i, row in enumerate(new_grid):
+        for i, row in enumerate(self.GRID):
             for j, cell in enumerate(row):
                 if cell.can_move:
                     cell.make_move()
@@ -171,5 +172,5 @@ class World:
         """Метод запуска мира."""
         while True:
             self._make_step()
-            time.sleep(0.1)
+            time.sleep(1)
             self._window.update()
