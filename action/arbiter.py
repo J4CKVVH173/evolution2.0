@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from typing import Tuple
 
-from cells import Empty, BaseCell
+from cells import Empty, BaseCell, PlantFood
 
 
 class ActionContext:
@@ -75,13 +75,21 @@ class HerbArbiter(Arbiter):
         new_map: Tuple[Tuple[BaseCell]],
     ):
         action = cell.get_move_info()
+
+        # получаем текущее положение клетки и размеры карты
+        x, y = coordinates
+        map_width = len(old_map[0])
+        map_height = len(old_map)
+
         # ToDo реализовать как цепочку
+        if cell.is_dead:
+            food = PlantFood().set_id(cell.get_id)
+            new_map[y][x] = food
+            return
+
         move = action.get_move()
         if move is not None:
             x_delta, y_delta = move
-            x, y = coordinates
-            map_width = len(old_map[0])
-            map_height = len(old_map)
 
             j = x + x_delta  # высчитывается новая координата положения
 

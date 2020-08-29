@@ -20,5 +20,7 @@ class Herbivore(BaseLive):
         if gen in [12, 13, 14, 15]:
             self._move_info.set_move_x(-1)  # влево
 
+        self._reducing_health()
+
     def set_state(self):
         pass

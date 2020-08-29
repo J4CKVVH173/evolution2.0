@@ -74,6 +74,24 @@ class BaseLive(BaseCell):
         """
         return self.GENOME.copy()
 
+    def _reducing_health(self, count: int = 1):
+        """Метод уменьшает здоровье клетки на 1.
+
+        Args:
+            count (int, optional): Значение на которое здоровье клетки должно быть уменьшено. Defaults to 1.
+        """
+        self.HEALTH -= count
+
     @property
-    def get_color(self):
+    def get_color(self) -> str:
         return self.COLOR
+
+    @property
+    def is_dead(self) -> bool:
+        """Свойство возвращает информацию о том, жива ли клетка.
+
+        Если здоровье клетки 0 или меньше, то она считается мертвой.
+        Returns:
+            bool: True - если мертва, False - если жива
+        """
+        return self.HEALTH <= 0
