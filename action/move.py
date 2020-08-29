@@ -59,5 +59,4 @@ class MoveBuilder:
 
     def build(self) -> Move:
         product = Move(self._X, self._Y, self._BITE)
-        self.reset()
         return product

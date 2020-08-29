@@ -66,6 +66,10 @@ class BaseLive(BaseCell):
         """
         return self._move_info.build()
 
+    def reset_move_info(self) -> None:
+        """Метод производит сброс настроек об информации движения клетки."""
+        self._move_info.reset()
+
     def save_genom(self) -> list:
         """Метод для сохранение существующего генома клетки.
 
