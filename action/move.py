@@ -4,12 +4,10 @@ from typing import Tuple, Union
 class Move:
     """Класс содержит информацию о сделанном шаге клетке."""
 
-    def __init__(self, x: int = None, y: int = None, bite: bool = False, bite_x: int = None, bite_y: int = None):
+    def __init__(self, x: int = None, y: int = None, bite: bool = False):
         self.MOVE_X = x
         self.MOVE_Y = y
         self.BITE = bite
-        self.BITE_X = bite_x
-        self.BITE_Y = bite_y
 
     def get_move(self) -> Union[Tuple[int, int], None]:
         """Метод возвращает информацию о том, куда клетка делает шаг.
@@ -17,7 +15,18 @@ class Move:
         Returns:
             Union[Tuple[int], None]: Информация о сделанном шаге клетко, если клетка не двигается, возвращается None.
         """
-        if self.MOVE_X is None and self.MOVE_Y is None:
+        # Если клетка кусает, она не ходит
+        if self.BITE:
+            return None
+        return self.MOVE_X, self.MOVE_Y
+
+    def get_bite(self) -> Union[Tuple[int, int], None]:
+        """Метод возвращает информацию о том, куда клетка кусает.
+
+        Returns:
+            Union[Tuple[int, int], None]: Информация об укусе, если клетка не кусает, возвращается None.
+        """
+        if not self.BITE:
             return None
         return self.MOVE_X, self.MOVE_Y
 
@@ -31,8 +40,6 @@ class MoveBuilder:
         self._X = 0
         self._Y = 0
         self._BITE = False
-        self._BITE_X = 0
-        self._BITE_Y = 0
 
     def set_move_x(self, x: int) -> None:
         """Метод устанавливает значение для шага по оси X.
@@ -51,6 +58,6 @@ class MoveBuilder:
         self._Y += y
 
     def build(self) -> Move:
-        product = Move(self._X, self._Y, self._BITE, self._BITE_X, self._BITE_Y)
+        product = Move(self._X, self._Y, self._BITE)
         self.reset()
         return product
