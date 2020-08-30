@@ -57,6 +57,14 @@ class MoveBuilder:
         """
         self._Y += y
 
+    def set_bite(self, bite=True) -> None:
+        """Метод устанавливает значение укуса.
+
+        Args:
+            bite (bool, optional): True если клетка кусает. Defaults to True.
+        """
+        self._BITE = bite
+
     def build(self) -> Move:
         product = Move(self._X, self._Y, self._BITE)
         return product

@@ -118,7 +118,6 @@ class Move(Handler):
             map_height = len(old_map)
 
             i, j = self._action_coorinates([x, y], move, [map_width, map_height])
-            cell.reset_move_info()
 
             # возможность прохода на клетку проверяется по старой карте
             new_position_cell = old_map[j][i]
@@ -142,4 +141,33 @@ class Move(Handler):
 
 
 class EatHerbFood(Handler):
-    pass
+    """Звено обрабаотывающее укус травоядной клетки."""
+
+    def handle(
+        self,
+        cell: BaseCell,
+        coordinates: Tuple[int, int],
+        old_map: Tuple[Tuple[BaseCell]],
+        new_map: Tuple[Tuple[BaseCell]],
+    ):
+        bite = cell.get_move_info().get_bite()
+        result = False
+
+        if bite is not None:
+            x, y = coordinates
+            map_width = len(old_map[0])
+            map_height = len(old_map)
+
+            i, j = self._action_coorinates([x, y], bite, [map_width, map_height])
+
+            target_cell = old_map[j][i]
+            if isinstance(target_cell, PlantFood) and target_cell.is_edible:
+                target_cell.eat()
+                cell.got_food()
+                new_map[j][i] = Empty().set_id(target_cell.get_id)
+            new_map[y][x] = cell
+
+        if bite is None and self._next is not None:
+            result = self._next.handle(cell, coordinates, old_map, new_map)
+
+        return result

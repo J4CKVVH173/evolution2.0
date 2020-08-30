@@ -23,8 +23,8 @@ class BaseLive(BaseCell):
             self._generate_genome()
 
     @abstractmethod
-    def set_state(self):
-        """Метод для установки внутреннего состояния клетки после внешнего воздействия на нее."""
+    def got_food(self):
+        """Метод для установки внутреннего состояния клетки, после того как клетка поела."""
         pass
 
     @abstractmethod
@@ -48,7 +48,7 @@ class BaseLive(BaseCell):
     def _generate_genome(self) -> None:
         """Метод для генерации первоначального генома."""
         for _ in range(64):
-            self.GENOME.append(random.randint(0, 15))
+            self.GENOME.append(random.randint(0, 31))
 
     def _set_genom(self, genom: list) -> None:
         """Метод для установки генома.
@@ -78,13 +78,13 @@ class BaseLive(BaseCell):
         """
         return self.GENOME.copy()
 
-    def _reducing_health(self, count: int = 1):
-        """Метод уменьшает здоровье клетки на 1.
+    def _change_health(self, count: int = -1):
+        """Метод для изменения здоровья клетки.
 
         Args:
-            count (int, optional): Значение на которое здоровье клетки должно быть уменьшено. Defaults to 1.
+            count (int, optional): Значение на которое здоровье клетки должно быть уменьшено. Defaults to -1.
         """
-        self.HEALTH -= count
+        self.HEALTH += count
 
     @property
     def get_color(self) -> str:

@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from typing import Tuple
 
 from cells import BaseCell
-from action.arbiter_handler import StartMove, Move
+from action.arbiter_handler import StartMove, Move, EatHerbFood
 
 
 class ActionContext:
@@ -77,6 +77,11 @@ class HerbArbiter(Arbiter):
     ):
         start = StartMove()
         move = Move()
+        eat = EatHerbFood()
 
         start.set_next(move)
+        move.set_next(eat)
+
         start.handle(cell, coordinates, old_map, new_map)
+
+        cell.reset_move_info()
