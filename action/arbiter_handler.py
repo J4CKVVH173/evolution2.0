@@ -10,6 +10,11 @@ class Handler(ABC):
 
     _next: "Handler" = None
 
+    def __new__(cls):
+        if not hasattr(cls, "instance"):
+            cls.instance = super().__new__(cls)
+        return cls.instance
+
     @abstractmethod
     def handle(
         self,
@@ -41,7 +46,7 @@ class Handler(ABC):
         return self
 
     @staticmethod
-    def _action_coorinates(
+    def _action_coordinates(
         coordinates: Tuple[int, int], move_delta: Tuple[int, int], map_size: Tuple[int, int]
     ) -> Tuple[int, int]:
         """Метод производит расчет координат ячейки, с которыми клетка должна произвести взаимодействие.
@@ -117,7 +122,7 @@ class Move(Handler):
             map_width = len(old_map[0])
             map_height = len(old_map)
 
-            i, j = self._action_coorinates([x, y], move, [map_width, map_height])
+            i, j = self._action_coordinates([x, y], move, [map_width, map_height])
 
             # возможность прохода на клетку проверяется по старой карте
             new_position_cell = old_map[j][i]
@@ -158,10 +163,10 @@ class EatHerbFood(Handler):
             map_width = len(old_map[0])
             map_height = len(old_map)
 
-            i, j = self._action_coorinates([x, y], bite, [map_width, map_height])
+            i, j = self._action_coordinates([x, y], bite, [map_width, map_height])
 
             target_cell = old_map[j][i]
-            if isinstance(target_cell, PlantFood) and target_cell.is_edible:
+            if isinstance(target_cell, PlantFood) and target_cell.can_eat:
                 target_cell.eat()
                 cell.got_food()
                 new_map[j][i] = Empty().set_id(target_cell.get_id)

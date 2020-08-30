@@ -145,6 +145,7 @@ class World:
         for i, row in enumerate(self.GRID):
             for j, cell in enumerate(row):
                 if cell.can_move:
+                    # сперва клетка делает действие и затем арбитер с учетом типа клетки изменяет внешнее состояние мира
                     cell.make_move()
                     if isinstance(cell, Herbivore):
                         self._action_context.set_strategy(self._herb_arbiter)

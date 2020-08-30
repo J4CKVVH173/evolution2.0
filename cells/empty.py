@@ -23,9 +23,5 @@ class Empty(BaseCell):
     def get_color(self):
         return self.TYPE.COLOR
 
-    @property
-    def can_move(self):
-        return False
-
     def busy(self):
         self.SOLID = True

@@ -18,7 +18,3 @@ class Wall(BaseCell):
     @property
     def get_color(self):
         return self.TYPE.COLOR
-
-    @property
-    def can_move(self):
-        return False
