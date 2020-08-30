@@ -1,0 +1,9 @@
+pylint:
+    run: true
+    disable:
+      - too-many-arguments
+      - too-many-nested-blocks
+      - unnecessary-pass
+
+ignore-patterns:
+    - __init__.py

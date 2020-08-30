@@ -47,7 +47,7 @@ class BaseLive(BaseCell):
 
     def _generate_genome(self) -> None:
         """Метод для генерации первоначального генома."""
-        for i in range(64):
+        for _ in range(64):
             self.GENOME.append(random.randint(0, 15))
 
     def _set_genom(self, genom: list) -> None:

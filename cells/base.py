@@ -29,13 +29,13 @@ class BaseCell(ABC):
     def get_id(self) -> int:
         return self.MAP_ID
 
-    def set_id(self, id: int) -> 'BaseCell':
+    def set_id(self, map_id: int) -> 'BaseCell':
         """Метод установки id ячейки.
 
         Args:
-            id (int): id ячейки.
+            map_id (int): id ячейки.
         """
-        self.MAP_ID = id
+        self.MAP_ID = map_id
         return self
 
     def __repr__(self):

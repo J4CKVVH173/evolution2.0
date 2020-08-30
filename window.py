@@ -81,10 +81,10 @@ class World:
         for i, row in enumerate(self.GRID):
             x1 = 0
             x2 = settings.CELL_X
-            for j, cell in enumerate(row):
+            for j, _ in enumerate(row):
                 empty = Empty()
-                id = self._window.create_rectangle(x1, y1, x2, y2)
-                empty.set_id(id)
+                map_id = self._window.create_rectangle(x1, y1, x2, y2)
+                empty.set_id(map_id)
                 self.GRID[i][j] = empty
                 x1 += settings.CELL_X
                 x2 += settings.CELL_X

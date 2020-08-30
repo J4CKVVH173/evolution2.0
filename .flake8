@@ -2,4 +2,4 @@
 exclude = .git, __pycache__, migrations, fixtures, wsgi.py, env, venv, .idea, manage.py, settings.py,
 	urls.py, managers.py, __init__.py, settings_dev.py, gunicorn.conf.py
 max-line-length = 120
-ignore: D106, D104, D105, D107, I100, I201, D100
+ignore: D106, D104, D105, D107, I100, I201, D100, N803
