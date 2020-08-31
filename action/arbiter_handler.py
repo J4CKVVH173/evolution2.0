@@ -138,6 +138,7 @@ class Move(Handler):
                 # если клетка заблокирована, куда нужно сделать шаг, то все равно нужно обновить состояние объекта
                 # на новой карте объект, пусть он и остался на месте
                 new_map[y][x] = cell
+            return True
 
         if move is None and self._next is not None:
             result = self._next.handle(cell, coordinates, old_map, new_map)
@@ -171,8 +172,63 @@ class EatHerbFood(Handler):
                 cell.got_food()
                 new_map[j][i] = Empty().set_id(target_cell.get_id)
             new_map[y][x] = cell
+            return True
 
         if bite is None and self._next is not None:
+            result = self._next.handle(cell, coordinates, old_map, new_map)
+
+        return result
+
+
+class Reproduction(Handler):
+    """Звено для размножения клеток."""
+
+    def handle(
+        self,
+        cell: BaseCell,
+        coordinates: Tuple[int, int],
+        old_map: Tuple[Tuple[BaseCell]],
+        new_map: Tuple[Tuple[BaseCell]],
+    ):
+        is_reproduction = cell.get_move_info().is_reproduction()
+        result = False
+
+        if is_reproduction and cell.can_reproduction:
+            x, y = coordinates
+            map_width = len(old_map[0])
+            map_height = len(old_map)
+
+            cell_clone_position = old_map[y][x]
+
+            x_delta = y_delta = -1
+
+            # если клетка может размножаться, проверяем есть ле место, где может расположиться копия
+            while cell_clone_position.is_solid:
+                i, j = self._action_coordinates([x, y], [x_delta, y_delta], [map_width, map_height])
+                cell_clone_position = old_map[j][i]
+
+                if y_delta < 1:
+                    y_delta += 1
+
+                if y_delta == 1:
+                    x_delta += 1
+
+                if x_delta == 2:
+                    # если x_delta > 1 и y_delta == 1, получается свободного места рядом с клеткой нет, но обработать
+                    # данное звено смогло, значит просто завершаем обработку
+                    x, y = coordinates
+                    new_map[y][x] = cell
+                    return True
+
+            # если есть место где располагать новую клетку, начинается процесс репродукции
+            cell_clone = cell.reprodaction()
+            cell_clone.set_id(cell_clone_position.get_id)
+            cell_clone_position.busy()
+            new_map[y][x] = cell
+            new_map[j][i] = cell_clone
+            return True
+
+        if self._next is not None:
             result = self._next.handle(cell, coordinates, old_map, new_map)
 
         return result

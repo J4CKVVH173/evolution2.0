@@ -4,10 +4,11 @@ from typing import Tuple, Union
 class Move:
     """Класс содержит информацию о сделанном шаге клетке."""
 
-    def __init__(self, x: int = None, y: int = None, bite: bool = False):
+    def __init__(self, x: int = None, y: int = None, bite: bool = False, reproduction=False):
         self.MOVE_X = x
         self.MOVE_Y = y
         self.BITE = bite
+        self.REPRODUCTION = reproduction
 
     def get_move(self) -> Union[Tuple[int, int], None]:
         """Метод возвращает информацию о том, куда клетка делает шаг.
@@ -16,7 +17,7 @@ class Move:
             Union[Tuple[int], None]: Информация о сделанном шаге клетко, если клетка не двигается, возвращается None.
         """
         # Если клетка кусает, она не ходит
-        if self.BITE:
+        if self.BITE or self.REPRODUCTION:
             return None
         return self.MOVE_X, self.MOVE_Y
 
@@ -30,6 +31,14 @@ class Move:
             return None
         return self.MOVE_X, self.MOVE_Y
 
+    def is_reproduction(self) -> bool:
+        """Метод возвращает информацию о том, производит ли клетка деление.
+
+        Returns:
+            bool: True - если клетка производит деление, False если нет
+        """
+        return self.REPRODUCTION
+
 
 class MoveBuilder:
     def __init__(self):
@@ -40,6 +49,7 @@ class MoveBuilder:
         self._X = 0
         self._Y = 0
         self._BITE = False
+        self._REPRODUCTION = False
 
     def set_move_x(self, x: int) -> None:
         """Метод устанавливает значение для шага по оси X.
@@ -65,6 +75,14 @@ class MoveBuilder:
         """
         self._BITE = bite
 
+    def set_reproduction(self, reproduction: bool = True) -> None:
+        """Метод устанавливает значения размножения.
+
+        Args:
+            reproduction (bool): True если клетка производит размножение.
+        """
+        self._REPRODUCTION = reproduction
+
     def build(self) -> Move:
-        product = Move(self._X, self._Y, self._BITE)
+        product = Move(self._X, self._Y, self._BITE, self._REPRODUCTION)
         return product

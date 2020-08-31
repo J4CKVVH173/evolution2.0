@@ -8,11 +8,11 @@ from cells.base import BaseCell
 class BaseLive(BaseCell):
     """Базовый класс для живых клеток."""
 
-    def __init__(self, genom=None):
+    def __init__(self, genom=None, health=30):
         super().__init__()
         self.GENOME = []
         self.GENOME_POINTER = 0
-        self.HEALTH = 50
+        self.HEALTH = health
         self.FIXED = False
 
         self._move_info = MoveBuilder()
@@ -48,7 +48,7 @@ class BaseLive(BaseCell):
     def _generate_genome(self) -> None:
         """Метод для генерации первоначального генома."""
         for _ in range(64):
-            self.GENOME.append(random.randint(0, 31))
+            self.GENOME.append(random.randint(0, 35))
 
     def _set_genom(self, genom: list) -> None:
         """Метод для установки генома.
@@ -86,9 +86,23 @@ class BaseLive(BaseCell):
         """
         self.HEALTH += count
 
+    def reprodaction(self) -> 'BaseLive':
+        """Интерфейс прототипа для создания копии клетки.
+
+        Returns:
+            BaseLive: Будет возвращена копия клетки.
+        """
+        pass
+
     @property
     def get_color(self) -> str:
         return self.COLOR
+
+    @staticmethod
+    @property
+    def can_reproduction(self):
+        """Свойство определяет, может ли клетка размножаться или нет."""
+        pass
 
     @property
     def is_dead(self) -> bool:

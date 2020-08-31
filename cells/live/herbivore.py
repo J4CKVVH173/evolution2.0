@@ -32,8 +32,19 @@ class Herbivore(BaseLive):
         elif gen in [28, 29, 30, 31]:
             self._move_info.set_move_x(-1)
             self._move_info.set_bite()
+        elif gen in [32, 33, 34, 35]:
+            self._move_info.set_reproduction()
 
         self._change_health()
 
     def got_food(self):
-        self._change_health(50)
+        self._change_health(round(self.HEALTH / 2))
+
+    def reprodaction(self):
+        self._change_health(-1 * round(self.HEALTH / 2))
+        genom = self.save_genom()
+        return Herbivore(genom, self.HEALTH)
+
+    @property
+    def can_reproduction(self):
+        return self.HEALTH > 4
