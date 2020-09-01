@@ -8,7 +8,7 @@ from cells.base import BaseCell
 class BaseLive(BaseCell):
     """Базовый класс для живых клеток."""
 
-    def __init__(self, genom=None, health=30):
+    def __init__(self, genom=None, health=40):
         super().__init__()
         self.GENOME = []
         self.GENOME_POINTER = 0
@@ -48,7 +48,7 @@ class BaseLive(BaseCell):
     def _generate_genome(self) -> None:
         """Метод для генерации первоначального генома."""
         for _ in range(64):
-            self.GENOME.append(random.randint(0, 35))
+            self.GENOME.append(random.randint(0, 63))
 
     def _set_genom(self, genom: list) -> None:
         """Метод для установки генома.

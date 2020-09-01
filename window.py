@@ -173,5 +173,5 @@ class World:
         """Метод запуска мира."""
         while True:
             self._make_step()
-            time.sleep(0.2)
+            time.sleep(0.1)
             self._window.update()

@@ -1,4 +1,5 @@
 import settings
+import random
 
 from .base import BaseLive
 
@@ -32,17 +33,26 @@ class Herbivore(BaseLive):
         elif gen in [28, 29, 30, 31]:
             self._move_info.set_move_x(-1)
             self._move_info.set_bite()
-        elif gen in [32, 33, 34, 35]:
+        elif gen in [32, 33]:
             self._move_info.set_reproduction()
 
         self._change_health()
 
     def got_food(self):
-        self._change_health(round(self.HEALTH / 2))
+        self._change_health(20)
 
     def reprodaction(self):
         self._change_health(-1 * round(self.HEALTH / 2))
         genom = self.save_genom()
+        count = 0
+        # мутация генов
+        for i, _ in enumerate(genom):
+            if count >= 8:
+                break
+            if random.random() < 0.05:
+                count += 1
+                genom[i] = random.randint(0, 63)
+
         return Herbivore(genom, self.HEALTH)
 
     @property
