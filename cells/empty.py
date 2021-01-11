@@ -18,6 +18,7 @@ class Empty(BaseCell):
     def __init__(self):
         super().__init__()
         self.SOLID = False
+        self.COST = 0.0
 
     @property
     def get_color(self):

@@ -9,3 +9,5 @@ CELL_HERBIVORE = 'blue'
 EMPTY = 'white'
 WALL = 'grey'
 PLANT_FOOD = 'green'
+
+CELLS_POPULATION = 64

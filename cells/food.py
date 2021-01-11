@@ -9,10 +9,17 @@ class Food(BaseCell):
     def __init__(self):
         super().__init__()
         self.HEALTH = 1
+        self.COST = 0.5
 
     def eat(self) -> None:
         """Метод для поедания клетки."""
         self.HEALTH = 0
+
+    @property
+    def get_cost(self) -> None:
+        if self.can_eat:
+            return self.COST
+        return self.NOT_ACTIVE_COST
 
     @property
     def can_eat(self) -> bool:

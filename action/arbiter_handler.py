@@ -6,7 +6,7 @@ from cells import Empty, BaseCell, PlantFood
 
 
 class Handler(ABC):
-    """Асбтрактный класс для цепочки обработчиков для арбитера."""
+    """Абстрактный класс для цепочки обработчиков для арбитера."""
 
     _next: "Handler" = None
 
@@ -105,7 +105,7 @@ class StartMove(Handler):
 
 
 class Move(Handler):
-    """Звено обрабатыващее движение клетки."""
+    """Звено обрабатывающее движение клетки."""
 
     def handle(
         self,
@@ -147,7 +147,7 @@ class Move(Handler):
 
 
 class EatHerbFood(Handler):
-    """Звено обрабаотывающее укус травоядной клетки."""
+    """Звено обрабатывающее укус травоядной клетки."""
 
     def handle(
         self,

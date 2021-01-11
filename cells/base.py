@@ -8,6 +8,8 @@ class BaseCell(ABC):
         self.MAP_ID = None
         self.FIXED = True
         self.SOLID = True
+        self.COST = -1.0
+        self.NOT_ACTIVE_COST = -1.0  # вес ячейки которая находится в состоянии не подлежащем взаимодействию
 
     @property
     @abstractmethod
@@ -28,6 +30,13 @@ class BaseCell(ABC):
     @property
     def get_id(self) -> int:
         return self.MAP_ID
+
+    @property
+    def get_cost(self) -> float:
+        """Параметр определяющий стоимость ячейки для ее определения в нейросети."""
+        if self.is_solid:
+            return self.NOT_ACTIVE_COST
+        return self.COST
 
     def set_id(self, map_id: int) -> 'BaseCell':
         """Метод установки id ячейки.

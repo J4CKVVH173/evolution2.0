@@ -1,39 +1,34 @@
-import settings
-import random
-
 from .base import BaseLive
 
 
 class Herbivore(BaseLive):
     """Класс травоядной ячейки."""
 
-    COLOR = settings.CELL_HERBIVORE
-
-    def make_move(self) -> None:
-        gen = self.get_gen()
+    def make_move(self, inputs: list) -> None:
+        move_number = self.neurons.compute(inputs)
         # просто движение
-        if gen in [0, 1, 2, 3]:
+        if move_number == 0:
             self._move_info.set_move_y(-1)  # вверх
-        elif gen in [4, 5, 6, 7]:
+        elif move_number == 1:
             self._move_info.set_move_x(1)  # вправо
-        elif gen in [8, 9, 10, 11]:
+        elif move_number == 2:
             self._move_info.set_move_y(1)  # вниз
-        elif gen in [12, 13, 14, 15]:
+        elif move_number == 3:
             self._move_info.set_move_x(-1)  # влево
         # укус
-        elif gen in [16, 17, 18, 19]:
+        elif move_number == 4:
             self._move_info.set_move_y(-1)
             self._move_info.set_bite()
-        elif gen in [20, 21, 22, 23]:
+        elif move_number == 5:
             self._move_info.set_move_x(1)
             self._move_info.set_bite()
-        elif gen in [24, 25, 26, 27]:
+        elif move_number == 6:
             self._move_info.set_move_y(1)
             self._move_info.set_bite()
-        elif gen in [28, 29, 30, 31]:
+        elif move_number == 7:
             self._move_info.set_move_x(-1)
             self._move_info.set_bite()
-        elif gen in [32, 33]:
+        elif move_number == 8:
             self._move_info.set_reproduction()
 
         self._change_health()
@@ -43,17 +38,10 @@ class Herbivore(BaseLive):
 
     def reprodaction(self):
         self._change_health(-1 * round(self.HEALTH / 2))
-        genom = self.save_genom()
-        count = 0
-        # мутация генов
-        for i, _ in enumerate(genom):
-            if count >= 8:
-                break
-            if random.random() < 0.05:
-                count += 1
-                genom[i] = random.randint(0, 63)
+        for sub in self.BORN_SUBSCRIBERS:
+            sub.new_cell()
 
-        return Herbivore(genom, self.HEALTH)
+        return Herbivore(self.save_genome(), self.get_health, self.get_clan_name)
 
     @property
     def can_reproduction(self):
