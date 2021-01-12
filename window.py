@@ -3,8 +3,6 @@ import random
 from tkinter import Button, Canvas, Tk
 from typing import List
 
-from numpy import array
-
 import settings
 from action import ActionContext, HerbArbiter
 from cells import BaseCell, Empty, PlantFood, Wall
@@ -222,11 +220,18 @@ class World:
         """Метод проверяет, является ли данная итерация концом эпохи."""
         return self.population.total_count == 0
 
+    def _clear_world(self) -> None:
+        """Метод для полной очистки мира."""
+        self._generate_map()
+        self._generate_walls()
+
     def reload_world(self) -> None:
         """Метод производит перезапуск мира, если был конец эпохи."""
         self._window.change_past_steps_count(self.step)
         self.epoch += 1
         self.step = 0
+
+        self._clear_world()
 
         best_epoch_cells = self.grave.get_best()
         children_genome = self.reproduction.crossing(*best_epoch_cells)
