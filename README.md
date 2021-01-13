@@ -1,7 +1,7 @@
 # Evolution
 Симулятор эволюции клеток
 
-![preview](https://github.com/J4CKVVH173/evolution2.0/preview/preview.png)
+![preview](https://github.com/J4CKVVH173/evolution2.0/tree/master/preview/preview.png)
 
 ## Установка
 Для работы необходимо поставить зависимости из `requirements.txt` и библиотеку `tkinter`.
