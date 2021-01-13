@@ -15,6 +15,18 @@ class Population:
         """Метод обрабатывающий событие смерти клетки в мире и уменьшающий общее число живых клеток."""
         self.total_count -= 1
 
+    def clear_population(self) -> None:
+        """Метод производит сброс популяции мира в нуль."""
+        self.total_count = 0
+
+    def update_population(self, world: list) -> None:
+        """Метод для установления новой популяции мира."""
+        self.clear_population()
+        for line in world:
+            for cell in line:
+                if isinstance(cell, BaseLive):
+                    self.new_cell()
+
     @property
     def world_is_extinct(self) -> bool:
         """Метод определяющий, является мир мертвым или нет.

@@ -14,7 +14,7 @@ class BaseLive(BaseCell):
     BORN_SUBSCRIBERS = []  # подписчики для события рождения новой клетки
     DEATH_SUBSCRIBERS = []  # подписчики для события смерти клетки
 
-    def __init__(self, genome=None, health=40, clan=None, color=CELL_HERBIVORE):
+    def __init__(self, genome=None, health=25, clan=None, color=CELL_HERBIVORE):
         super().__init__()
         self.HEALTH = health
         self.FIXED = False
@@ -30,7 +30,7 @@ class BaseLive(BaseCell):
 
         self._move_info = MoveBuilder()
 
-        if genome:
+        if genome is not None:
             self._set_genome(*genome)
         else:
             self._generate_genome()

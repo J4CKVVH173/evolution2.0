@@ -30,9 +30,9 @@ class Window:
         self._canvas = Canvas(self._root, width=self.WIDTH, height=self.HEIGHT, background=self.BACKGROUND)
         self._canvas.pack()
         self.cells_count = self._canvas.create_text(60, 720, text=f"Live cells: {settings.CELLS_POPULATION}")
-        self.epoch_count = self._canvas.create_text(150, 720, text="Epoch: 1")
-        self.steps_count = self._canvas.create_text(230, 720, text="Steps: 1")
-        self.past_steps_count = self._canvas.create_text(330, 720, text="Past steps: 0")
+        self.epoch_count = self._canvas.create_text(160, 720, text="Epoch: 1")
+        self.steps_count = self._canvas.create_text(280, 720, text="Steps: 1")
+        self.past_steps_count = self._canvas.create_text(390, 720, text="Past steps: 0")
 
     def _exit_command(self):
         self._root.destroy()
@@ -158,7 +158,19 @@ class World:
 
         self._update_world(new_grid)
 
-    def _set_cells(self, Cell: BaseCell, count: int) -> None:
+    def _remove_all_cells(self):
+        """Метод приводит мир к чистому состоянию."""
+        new_grid = copy.deepcopy(self.GRID)
+
+        for i, row in enumerate(new_grid):
+            for j, cell in enumerate(row):
+                empty = Empty()
+                empty.set_id(cell.get_id)
+                new_grid[i][j] = empty
+
+        self._update_world(new_grid)
+
+    def _set_cells(self, Cell: BaseCell, count: int, **kwargs) -> None:
         """Метод генерирует определенное количество клеток в мире в рандомные, пустых местах.
 
         Args:
@@ -178,7 +190,7 @@ class World:
                         # из-за низкой вероятности создания клетки растительной пищи и бесконечного цикла, достигается
                         # равномерное покрытие
                         if random.random() < coefficient:
-                            new_cell = Cell()
+                            new_cell = Cell(**kwargs)
                             new_cell.set_id(cell.get_id)
                             new_grid[i][j] = new_cell
 
@@ -205,10 +217,10 @@ class World:
 
         if self.is_end_epoch():
             self.reload_world()
+        else:
+            self._update_world(new_grid)
 
         self._update_helpfull_text()
-
-        self._update_world(new_grid)
 
     def _update_helpfull_text(self):
         """Метод для обновления вспомогательного текста."""
@@ -222,8 +234,30 @@ class World:
 
     def _clear_world(self) -> None:
         """Метод для полной очистки мира."""
-        self._generate_map()
+        self._remove_all_cells()
         self._generate_walls()
+        self._set_cells(PlantFood, 175)
+
+    def _fill_new_generation(
+        self, best_epoch_cells: list[Herbivore], children, best_mutation, second_mutation, children_mutation
+    ) -> None:
+        """Метод производит заполнение нового мира клетками с новым геномом.
+
+        Args:
+            best_epoch_cells (list): Массив содержащий в себе две лучшие клетки предыдущего поколения
+            children (matrix): Скрещенный геном двух лучших клеток предыдущего поколения
+            best_mutation (matrix): Измененный геном лучшей клетки предыдущего поколения
+            second_mutation (matrix): Измененный геном второй лучшей клетки предыдущего поколения
+            children_mutation (matrix): Измененный геном ребенка лучших клеток
+        """
+        best = best_epoch_cells[0]
+        second = best_epoch_cells[1]
+        self._set_cells(Herbivore, 8, genome=best.save_genome(), clan=best.get_clan_name, color=settings.BEST)
+        self._set_cells(Herbivore, 8, genome=second.save_genome(), clan=second.get_clan_name, color=settings.SECOND)
+        self._set_cells(Herbivore, 8, genome=children, color=settings.CHILDREN)
+        self._set_cells(Herbivore, 8, genome=best_mutation)
+        self._set_cells(Herbivore, 8, genome=second_mutation)
+        self._set_cells(Herbivore, 8, genome=children_mutation)
 
     def reload_world(self) -> None:
         """Метод производит перезапуск мира, если был конец эпохи."""
@@ -244,9 +278,16 @@ class World:
         for genome in best_genome:
             best_mutated_genome.append(self.reproduction.mutation(genome))
         for genome in second_genome:
-            second_mutated_genome.append(self.reproduction.mutation(genome))
+            second_mutated_genome.append(self.reproduction.mutation(genome, 0.4))
         for genome in children_genome:
             mutated_children.append(self.reproduction.mutation(genome))
+
+        self._fill_new_generation(
+            best_epoch_cells, children_genome, best_mutated_genome, second_mutated_genome, mutated_children
+        )
+        # обновлять популяцию нужно после того как мир был заново заселен клетками
+        self.grave.clear()
+        self.population.update_population(self.GRID)
 
     def _get_round_cost(self, i: int, j: int) -> list:
         """Метод возвращает значения всех клеток вокруг той, что должна совершить движение двигается.

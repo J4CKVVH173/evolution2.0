@@ -39,7 +39,7 @@ class Reprodaction:
 
         return array(new_genome)
 
-    def mutation(self, genome: array) -> array:
+    def mutation(self, genome: array, delta=0.15) -> array:
         """Метод производит мутацию переданного в него генома.
 
         Args:
@@ -54,7 +54,7 @@ class Reprodaction:
             new_gen = list()
             for nucleotide in gen:
                 if random.random() < 0.1:
-                    new_gen.append(nucleotide + random.choice([-1, 1]) * 0.15)
+                    new_gen.append(nucleotide + random.choice([-1, 1]) * delta)
                 else:
                     new_gen.append(nucleotide)
             new_genome.append(new_gen.copy())

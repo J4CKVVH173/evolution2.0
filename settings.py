@@ -11,3 +11,7 @@ WALL = 'grey'
 PLANT_FOOD = 'green'
 
 CELLS_POPULATION = 64
+
+BEST = '#8b00ff'
+SECOND = '#ff7f50'
+CHILDREN = '#de0c62'
