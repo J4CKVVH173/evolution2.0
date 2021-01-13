@@ -25,10 +25,14 @@ class Window:
         self._root.title(self.TITLE)
         self._root.geometry(f"{self.WIDTH}x{self.HEIGHT}")
 
-        exit_button = Button(self._root, text="exit", bg="black", fg="white", command=self._exit_command)
-        exit_button.pack()
+        Button(self._root, text="exit", bg="black", fg="white", command=self._exit_command).place(x=1200, y=0)
+        self.pause_button = Button(self._root, text="pause", bg="black", fg="white")
+        self.pause_button.place(x=0, y=0)
+        self.resume_button = Button(self._root, text="resume", bg="black", fg="white")
+        self.resume_button.place(x=70, y=0)
         self._canvas = Canvas(self._root, width=self.WIDTH, height=self.HEIGHT, background=self.BACKGROUND)
-        self._canvas.pack()
+        self._canvas.place(x=0, y=30)
+
         self.cells_count = self._canvas.create_text(60, 720, text=f"Live cells: {settings.CELLS_POPULATION}")
         self.epoch_count = self._canvas.create_text(160, 720, text="Epoch: 1")
         self.steps_count = self._canvas.create_text(280, 720, text="Steps: 1")
@@ -95,6 +99,22 @@ class Window:
         """
         self._canvas.itemconfig(self.past_steps_count, text=f"Past steps: {count}")
 
+    def set_pause_command(self, command):
+        """Метод производит установку команды для кнопки паузы.
+
+        Args:
+            command (callback): Функция которая будет установлена в кнопку.
+        """
+        self.pause_button.configure(command=command)
+
+    def set_resume_command(self, command):
+        """Метод производит установку команды для кнопки продолжить.
+
+        Args:
+            command (callback): Функция которая будет установлена в кнопку.
+        """
+        self.resume_button.configure(command=command)
+
 
 class World:
     """Класс Реализация для управления миром, в котором существуют клетки."""
@@ -105,6 +125,8 @@ class World:
 
     def __init__(self, window: Window):
         self._window = window
+        self._window.set_pause_command(self.stop_world)
+        self._window.set_resume_command(self.resume_world)
         self.population = Population(settings.CELLS_POPULATION)
         self.grave = Grave()
         self.reproduction = Reprodaction()
@@ -123,6 +145,8 @@ class World:
         self._generate_walls()
         self._set_cells(PlantFood, 150)
         self._set_cells(Herbivore, settings.CELLS_POPULATION)
+
+        self.is_active_world = True
 
     def _generate_map(self):
         """Метод вызывается для первичной генерации мира, заполняет его пустыми клетками."""
@@ -353,8 +377,15 @@ class World:
 
         self._window.change_cells_count(self.population.total_count)
 
+    def stop_world(self):
+        self.is_active_world = False
+
+    def resume_world(self):
+        self.is_active_world = True
+
     def execute(self):
         """Метод запуска мира."""
         while True:
-            self._make_step()
+            if self.is_active_world:
+                self._make_step()
             self._window.update()
