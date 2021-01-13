@@ -1,5 +1,6 @@
 import copy
 import random
+import time
 from tkinter import Button, Canvas, Tk
 from typing import List
 
@@ -10,6 +11,7 @@ from cells.live.herbivore import Herbivore
 from cells.reproduction import Reprodaction
 from lib.population import Grave, Population
 from lib.utils import duck_typing_elements_equals, duck_typing_lists_equals
+from logs.logging import Log
 
 
 class Window:
@@ -30,6 +32,8 @@ class Window:
         self.pause_button.place(x=0, y=0)
         self.resume_button = Button(self._root, text="resume", bg="black", fg="white")
         self.resume_button.place(x=70, y=0)
+        self.slow_mode = Button(self._root, text="slow", bg="black", fg="white")
+        self.slow_mode.place(x=145, y=0)
         self._canvas = Canvas(self._root, width=self.WIDTH, height=self.HEIGHT, background=self.BACKGROUND)
         self._canvas.place(x=0, y=30)
 
@@ -115,6 +119,14 @@ class Window:
         """
         self.resume_button.configure(command=command)
 
+    def set_slowmode_command(self, command):
+        """Метод производит установку команды для кнопки замедленного режима.
+
+        Args:
+            command (callback): Функция которая будет установлена в кнопку.
+        """
+        self.slow_mode.configure(command=command)
+
 
 class World:
     """Класс Реализация для управления миром, в котором существуют клетки."""
@@ -125,18 +137,15 @@ class World:
 
     def __init__(self, window: Window):
         self._window = window
-        self._window.set_pause_command(self.stop_world)
-        self._window.set_resume_command(self.resume_world)
+        self._bind_buttons()
         self.population = Population(settings.CELLS_POPULATION)
         self.grave = Grave()
         self.reproduction = Reprodaction()
         self.epoch = 1
         self.step = 1
+        self.sleep_time = 0
 
-        # производим подписку на объекты травоядных клеток
-        Herbivore.add_born_sub(self.population)
-        Herbivore.add_death_sub(self.population)
-        Herbivore.add_death_sub(self.grave)
+        self._subscribe()
 
         self._action_context = ActionContext()
         self._herb_arbiter = HerbArbiter()
@@ -147,6 +156,18 @@ class World:
         self._set_cells(Herbivore, settings.CELLS_POPULATION)
 
         self.is_active_world = True
+
+    def _bind_buttons(self):
+        """Метод производит прикрепление методов к кнопкам."""
+        self._window.set_pause_command(self.stop_world)
+        self._window.set_resume_command(self.resume_world)
+        self._window.set_slowmode_command(self.change_sleep_time)
+
+    def _subscribe(self):
+        """Производим подписку на объекты травоядных клеток."""
+        Herbivore.add_born_sub(self.population)
+        Herbivore.add_death_sub(self.population)
+        Herbivore.add_death_sub(self.grave)
 
     def _generate_map(self):
         """Метод вызывается для первичной генерации мира, заполняет его пустыми клетками."""
@@ -286,8 +307,6 @@ class World:
     def reload_world(self) -> None:
         """Метод производит перезапуск мира, если был конец эпохи."""
         self._window.change_past_steps_count(self.step)
-        self.epoch += 1
-        self.step = 0
 
         self._clear_world()
 
@@ -295,6 +314,12 @@ class World:
         children_genome = self.reproduction.crossing(*best_epoch_cells)
         best_genome = best_epoch_cells[0].save_genome()
         second_genome = best_epoch_cells[1].save_genome()
+
+        Log.log_genome(best_epoch_cells, self.epoch)
+        Log.log_info(self.epoch, self.step)
+
+        self.epoch += 1
+        self.step = 0
 
         best_mutated_genome = list()
         second_mutated_genome = list()
@@ -383,9 +408,16 @@ class World:
     def resume_world(self):
         self.is_active_world = True
 
+    def change_sleep_time(self):
+        if self.sleep_time == 0:
+            self.sleep_time = 0.1
+        else:
+            self.sleep_time = 0
+
     def execute(self):
         """Метод запуска мира."""
         while True:
             if self.is_active_world:
                 self._make_step()
             self._window.update()
+            time.sleep(self.sleep_time)
