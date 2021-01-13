@@ -410,7 +410,7 @@ class World:
 
     def change_sleep_time(self):
         if self.sleep_time == 0:
-            self.sleep_time = 0.1
+            self.sleep_time = 0.2
         else:
             self.sleep_time = 0
 
